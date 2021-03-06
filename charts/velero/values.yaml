@@ -15,6 +15,15 @@ image:
   imagePullSecrets: []
   # - registrySecretName
 
+# Annotations to add to the Velero deployment's. Optional.
+#
+# If you are using reloader use the following annotation with your VELERO_SECRET_NAME
+annotations: {}
+# secret.reloader.stakater.com/reload: "<VELERO_SECRET_NAME>"
+
+# Labels to add to the Velero deployment's. Optional.
+labels: {}
+
 # Annotations to add to the Velero deployment's pod template. Optional.
 #
 # If using kube2iam or kiam, use the following annotation with your AWS_ACCOUNT_ID
@@ -81,6 +90,11 @@ metrics:
   scrapeInterval: 30s
   scrapeTimeout: 10s
 
+  # service metdata if metrics are enabled
+  service:
+    annotations: {}
+    labels: {}
+
   # Pod annotations for Prometheus
   podAnnotations:
     prometheus.io/scrape: "true"
@@ -92,14 +106,6 @@ metrics:
     additionalLabels: {}
     # ServiceMonitor namespace. Default to Velero namespace.
     # namespace:
-
-# Install CRDs as a templates. Enabled by default.
-installCRDs: true
-
-# Enable/disable all helm hooks annotations
-# You should disable this if using a deploy tool that doesn't support helm hooks,
-# such as ArgoCD
-enableHelmHooks: true
 
 ##
 ## End of deployment-related settings.
@@ -177,6 +183,11 @@ configuration:
   restoreResourcePriorities:
   # `velero server` default: false
   restoreOnlyMode:
+  # `velero server` default: 20.0
+  clientQPS:
+  # `velero server` default: 30
+  clientBurst:
+  #
 
   # additional key/value pairs to be used as environment variables such as "AWS_CLUSTER_NAME: 'yourcluster.domain.tld'"
   extraEnvVars: {}
@@ -266,6 +277,12 @@ restic:
   # Tolerations to use for the Restic daemonset. Optional.
   tolerations: []
 
+  # Annotations to set for the Restic daemonset. Optional.
+  annotations: {}
+
+  # labels to set for the Restic daemonset. Optional.
+  labels: {}
+
   # Extra volumes for the Restic daemonset. Optional.
   extraVolumes: []
 
@@ -281,6 +298,9 @@ restic:
   # see more informations at: https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html
   securityContext: {}
     # fsGroup: 1337
+
+  # Node selector to use for the Restic daemonset. Optional.
+  nodeSelector: {}
 
 # Backup schedules to create.
 # Eg:
